@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:nova_chat/screens/home_provider.dart';
+import 'package:nova_chat/model/message_model.dart';
+import 'package:nova_chat/screens/chats/chat_page.dart';
+import 'package:nova_chat/screens/home/home_provider.dart';
 import 'package:nova_chat/utils/app_colors.dart';
 import 'package:nova_chat/utils/app_const.dart';
 import 'package:nova_chat/utils/text_style.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
 
   @override
+  TextEditingController questionController = TextEditingController();
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -31,6 +34,7 @@ class HomePage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
+
             children: [
             ///new chat and History
               Row(
@@ -63,6 +67,14 @@ class HomePage extends StatelessWidget {
               SizedBox(height: 15,),
               ///search bar
               TextField(
+                controller: questionController,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (value) {
+                  if(value.isNotEmpty) {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ChatPage(query: value),));
+                  }
+                  },
                 style: myTextStyle14(),
                 maxLines: 6,
                 cursorColor: AppColors.primaryTextColor,
@@ -72,6 +84,23 @@ class HomePage extends StatelessWidget {
                     borderSide: BorderSide.none
                   ),
                   filled: true,
+                  suffixIcon: InkWell(
+                    onTap: () {
+                      final value =questionController.text.trim();
+                      if(value.isNotEmpty){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(query: value),));
+                      }
+                    },
+                    child: Container(
+                        margin: EdgeInsets.all(10),
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.secondaryColor,
+                        ),
+                        child: Icon(Icons.send,size: 15,color: AppColors.primaryTextColor,)),
+                  ),
                   fillColor:AppColors.secondaryBgColor,
                   hintText: "Chat with Nova ",
                   hintStyle: myTextStyle14(),
@@ -81,7 +110,9 @@ class HomePage extends StatelessWidget {
               SizedBox(height: 15,),
               Consumer<HomeProvider>(builder: (context, provider, child) {
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    //pre chat categories
                     SizedBox(
                       height: 40,
                       child: ListView.builder(
@@ -111,32 +142,39 @@ class HomePage extends StatelessWidget {
                     GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 02,
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent:300 ,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12
                       ),
                       itemCount: AppConst.defaultQuestion[provider.selectedIndex]['questionInfo'].length,
                       itemBuilder: (context, index) {
                         Map<String, dynamic> eachQuestion = AppConst.defaultQuestion[provider.selectedIndex]['questionInfo'][index];
-                        return Container(
-                          padding:EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                              color: AppColors.secondaryBgColor,
-                              borderRadius: BorderRadius.circular(15)
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: eachQuestion['color'],
-                                radius: 22,
-                                child: Center(child: Icon(eachQuestion['icons'],color: Colors.white,size: 30,)),
-                              ),
-                              SizedBox(height: 10,),
-                              Text(eachQuestion['question'],style: myTextStyle16(fontWeight: FontWeight.w900),)
-                            ],
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(query: eachQuestion['question']),));
+                          },
+                          child: Container(
+                            padding:EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                                color: AppColors.secondaryBgColor,
+                                borderRadius: BorderRadius.circular(15)
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: CircleAvatar(
+                                    backgroundColor: eachQuestion['color'],
+                                    radius: 22,
+                                    child: Center(child: Icon(eachQuestion['icons'],color: Colors.white,size: 30,)),
+                                  ),
+                                ),
+                                SizedBox(height: 10,),
+                                Expanded(child: Text(eachQuestion['question'],style: myTextStyle16(fontWeight: FontWeight.w900),))
+                              ],
+                            ),
                           ),
                         );
                       },)
@@ -153,3 +191,5 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+

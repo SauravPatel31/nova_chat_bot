@@ -65,3 +65,11 @@ TextStyle myTextStyle11({FontWeight fontWeight=FontWeight.normal}){
     fontFamily: FontsStyle.interFonts.fontFamily,
   );
 }
+TextStyle myTextStyle10({FontWeight fontWeight=FontWeight.normal}){
+  return TextStyle(
+    fontSize: 10,
+    color: AppColors.secondaryTextColor,
+    fontWeight: fontWeight,
+    fontFamily: FontsStyle.interFonts.fontFamily,
+  );
+}

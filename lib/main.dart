@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nova_chat/screens/home_page.dart';
-import 'package:nova_chat/screens/home_provider.dart';
+import 'package:nova_chat/screens/home/home_page.dart';
+import 'package:nova_chat/screens/home/home_provider.dart';
 import 'package:nova_chat/utils/app_colors.dart';
 import 'package:provider/provider.dart';
 
