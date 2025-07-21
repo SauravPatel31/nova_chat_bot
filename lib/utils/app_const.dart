@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppConst{
 
+  static const String GEMINI_API_KEY='AIzaSyCYv2xV6Q4-26Jt86XQH_08OnHdTUgBz-E';
+
   static List<Map<String, dynamic>> defaultQuestion = [
     {
       "title": "Most Popular",

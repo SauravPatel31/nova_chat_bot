@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nova_chat/screens/chats/message_provider.dart';
 import 'package:nova_chat/screens/home/home_page.dart';
 import 'package:nova_chat/screens/home/home_provider.dart';
 import 'package:nova_chat/utils/app_colors.dart';
@@ -7,7 +8,9 @@ import 'package:provider/provider.dart';
 void main() {
   runApp( MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => MessageProvider()),
         ChangeNotifierProvider(create: (context) => HomeProvider()),
+
       ],
       child: MyApp()));
 }
