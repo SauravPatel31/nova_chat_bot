@@ -2,7 +2,6 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
-import 'package:nova_chat/data/remote/api_helper.dart';
 import 'package:nova_chat/screens/chats/message_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -10,43 +9,58 @@ import '../../model/message_model.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/text_style.dart';
 
-class ChatPage extends StatelessWidget {
-  final String query;
-  const ChatPage({super.key, required this.query});
+class ChatPage extends StatefulWidget {
+  final String? query;
 
+
+  const ChatPage({super.key, this.query});
+
+  @override
+  State<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
+  bool hasSentQuery = false;
+  @override
+  void initState() {
+    super.initState();
+    if (!hasSentQuery && widget.query != null && widget.query!.isNotEmpty) {
+      Provider.of<MessageProvider>(context, listen: false).sendMessage(message: widget.query!);
+      hasSentQuery = true;
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
     final TextEditingController questionController = TextEditingController();
     final DateFormat dateTimeFormat = DateFormat("hh:mm a");
 
-    // Call once when page opens to show initial message
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<MessageProvider>(context, listen: false);
-      if (provider.fetchAllMessages().isEmpty) {
-        provider.sendMessage(message: query);
+      if (provider.fetchAllMessages().isEmpty && widget.query != null && widget.query!.isNotEmpty) {
+        // Insert user message
+        provider.sendMessage(message: widget.query!);
       }
     });
+
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Row(
-          children: [
-            RichText(
-              text: TextSpan(
-                text: "Nova",
-                children: [
-                  TextSpan(
-                    text: " Chat",
-                    style: myTextStyle22(color: AppColors.secondaryColor),
-                  ),
-                ],
-                style: myTextStyle22(),
+        title: RichText(
+          text: TextSpan(
+            text: "Nova",
+            children: [
+              TextSpan(
+                text: " Chat",
+                style: myTextStyle22(color: AppColors.secondaryColor),
               ),
-            ),
-            const Icon(Icons.align_vertical_bottom, color: Colors.green),
-          ],
+            ],
+            style: myTextStyle22(),
+          ),
         ),
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: AppColors.primaryTextColor),
       ),
       body: Column(
         children: [
@@ -62,7 +76,7 @@ class ChatPage extends StatelessWidget {
                     final message = messageList[index];
                     return message.sendId == 0
                         ? _userChatBox(context, message, dateTimeFormat)
-                        : _botChatBox(context, message, dateTimeFormat,index);
+                        : _botChatBox(context, message, dateTimeFormat, index);
                   },
                 );
               },
@@ -75,6 +89,13 @@ class ChatPage extends StatelessWidget {
             child: TextField(
               controller: questionController,
               style: myTextStyle14(),
+              onSubmitted: (value) {
+                if (value.isNotEmpty) {
+                  Provider.of<MessageProvider>(context, listen: false)
+                      .sendMessage(message: value);
+                  questionController.clear();
+                }
+              },
               cursorColor: AppColors.primaryTextColor,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(20),
@@ -93,8 +114,8 @@ class ChatPage extends StatelessWidget {
                   },
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    width: 30,
-                    height: 30,
+                    width: 35,
+                    height: 35,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: AppColors.secondaryColor,
@@ -105,7 +126,7 @@ class ChatPage extends StatelessWidget {
                 filled: true,
                 fillColor: AppColors.secondaryBgColor,
                 hintText: "Chat with Nova",
-                hintStyle: myTextStyle14(),
+                hintStyle: myTextStyle14(color: Colors.grey),
               ),
             ),
           ),
@@ -139,9 +160,7 @@ class ChatPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                //message
                 Flexible(child: Text(msgModel.message ?? '', style: myTextStyle14())),
-                //time
                 Align(
                   alignment: Alignment.bottomLeft,
                   child: Text(time, style: myTextStyle10()),
@@ -154,13 +173,11 @@ class ChatPage extends StatelessWidget {
     );
   }
 
-  /// Bot Message Widget
+  /// Bot Message Widget (with loading)
   Widget _botChatBox(BuildContext context, MessageModel msgModel, DateFormat format, int index) {
     final time = format.format(
       DateTime.fromMillisecondsSinceEpoch(int.parse(msgModel.sentTime!)),
     );
-
-    final isLoading = context.watch<MessageProvider>().isLoading;
 
     return Row(
       children: [
@@ -180,31 +197,42 @@ class ChatPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                context.watch<MessageProvider>().isLoading
-                    ? SpinKitThreeBounce(
-                  color: Colors.red,
-                  size: 50,
-                ): Flexible(
-                  child: msgModel.isRead! ? Text(msgModel.message ?? '', style: myTextStyle14(),) : AnimatedTextKit(isRepeatingAnimation: false,
+                Flexible(
+                  child: msgModel.message!.isEmpty
+                      ? Row(
+                    children: const [
+                      SizedBox(width: 6),
+                      Text("Nova is typing", style: TextStyle(color: Colors.white)),
+                      SizedBox(width: 5),
+                      Padding(
+                        padding: EdgeInsets.only(top: 15),
+                        child: SpinKitThreeBounce(
+                          color: Colors.white,
+                          size: 10.0,
+                        ),
+                      ),
+                    ],
+                  )
+                      : msgModel.isRead!
+                      ? Text(msgModel.message ?? '', style: myTextStyle14())
+                      : AnimatedTextKit(
+                    isRepeatingAnimation: false,
                     repeatForever: false,
                     onFinished: () {
                       context.read<MessageProvider>().updateMsgRead(index: index);
                     },
-                    //context.watch<MessageProvider>().isLoading?SpinKitThreeBounce(color: Colors.green,size: 25.0,):
-                    animatedTexts:[TyperAnimatedText(msgModel.message ?? '',
-                      textStyle: myTextStyle14(),
-                      speed: const Duration(milliseconds: 100),
-                    ),
+                    animatedTexts: [
+                      TyperAnimatedText(
+                        msgModel.message ?? '',
+                        textStyle: myTextStyle14(),
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 5),
                 Align(
                   alignment: Alignment.bottomLeft,
-                  child: Text(
-                    time,
-                    style: myTextStyle11(),
-                  ),
+                  child: Text(time, style: myTextStyle11()),
                 ),
               ],
             ),
@@ -214,5 +242,4 @@ class ChatPage extends StatelessWidget {
       ],
     );
   }
-
 }

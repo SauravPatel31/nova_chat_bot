@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nova_chat/model/message_model.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:nova_chat/screens/chats/chat_page.dart';
 import 'package:nova_chat/screens/home/home_provider.dart';
 import 'package:nova_chat/utils/app_colors.dart';
@@ -8,10 +8,8 @@ import 'package:nova_chat/utils/text_style.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-
-  @override
   TextEditingController questionController = TextEditingController();
-
+  HomePage({super.key});
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -28,41 +26,30 @@ class HomePage extends StatelessWidget {
           ),
 
         ),
+        actions: [
+          InkWell(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(),));
+            },
+            child: Container(
+                margin: EdgeInsets.only(right: 16),
+                child: Image.asset("assets/icons/chatbot.png",width: 33,)),
+          )
+        ],
         backgroundColor: Colors.transparent,
       ),
       body:SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 15),
           child: Column(
-
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            ///new chat and History
-              Row(
-                children: [
-                  //new chat
-                  InkWell(
-                    onTap: (){},
-                    child: Row(
-                      children: [
-                        Icon(Icons.chat_outlined,size: 19,color: AppColors.primaryTextColor,),
-                        SizedBox(width: 5,),
-                        Text("New Chat",style: myTextStyle14(),)
-                      ],
-                    ),
-                  ),
-                  Spacer(),
-                  ///history
-                  InkWell(
-                    onTap: (){},
-                    child: Row(
-                      children: [
-                        Icon(Icons.history,size: 19,color: AppColors.secondaryTextColor,),
-                        SizedBox(width: 5,),
-                        Text("History",style: myTextStyle14(color: AppColors.secondaryTextColor),)
-                      ],
-                    ),
-                  ),
-                ],
+            ///new chat
+              InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(),));
+                },
+                child: Text("Easy Chat",style: myTextStyle14(),),
               ),
               SizedBox(height: 15,),
               ///search bar
@@ -84,22 +71,27 @@ class HomePage extends StatelessWidget {
                     borderSide: BorderSide.none
                   ),
                   filled: true,
-                  suffixIcon: InkWell(
-                    onTap: () {
-                      final value =questionController.text.trim();
-                      if(value.isNotEmpty){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(query: value),));
-                      }
-                    },
-                    child: Container(
-                        margin: EdgeInsets.all(10),
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.secondaryColor,
-                        ),
-                        child: Icon(Icons.send,size: 15,color: AppColors.primaryTextColor,)),
+                  suffixIcon: Padding(
+                    padding:  EdgeInsets.only(top: 110 ),
+                    child: InkWell(
+
+                      onTap: () {
+                        final value =questionController.text.trim();
+                        if(value.isNotEmpty){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(query: value),));
+                          questionController.clear();
+                        }
+                      },
+                      child: Container(
+                          margin: EdgeInsets.all(10),
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.secondaryColor,
+                          ),
+                          child: Icon(Icons.send,size: 15,color: AppColors.primaryTextColor,)),
+                    ),
                   ),
                   fillColor:AppColors.secondaryBgColor,
                   hintText: "Chat with Nova ",
@@ -143,47 +135,72 @@ class HomePage extends StatelessWidget {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent:300 ,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12
+                        maxCrossAxisExtent: 300,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
                       ),
                       itemCount: AppConst.defaultQuestion[provider.selectedIndex]['questionInfo'].length,
                       itemBuilder: (context, index) {
                         Map<String, dynamic> eachQuestion = AppConst.defaultQuestion[provider.selectedIndex]['questionInfo'][index];
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(query: eachQuestion['question']),));
-                          },
-                          child: Container(
-                            padding:EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                                color: AppColors.secondaryBgColor,
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: CircleAvatar(
-                                    backgroundColor: eachQuestion['color'],
-                                    radius: 22,
-                                    child: Center(child: Icon(eachQuestion['icons'],color: Colors.white,size: 30,)),
+
+                        return AnimationConfiguration.staggeredGrid(
+                          position: index,
+                          duration: const Duration(milliseconds: 600),
+                          columnCount: 2,
+                          child: ScaleAnimation(
+                            child: FadeInAnimation(
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ChatPage(query: eachQuestion['question']),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.secondaryBgColor,
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: CircleAvatar(
+                                          backgroundColor: eachQuestion['color'],
+                                          radius: 22,
+                                          child: Center(
+                                            child: Icon(
+                                              eachQuestion['icons'],
+                                              color: Colors.white,
+                                              size: 30,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Expanded(
+                                        child: Text(
+                                          eachQuestion['question'],
+                                          style: myTextStyle16(fontWeight: FontWeight.w900),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
-                                SizedBox(height: 10,),
-                                Expanded(child: Text(eachQuestion['question'],style: myTextStyle16(fontWeight: FontWeight.w900),))
-                              ],
+                              ),
                             ),
                           ),
                         );
-                      },)
+                      },
+                    )
+
                   ],
                 );
               },)
-
-
-
             ],
           ),
         ),

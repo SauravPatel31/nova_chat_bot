@@ -9,19 +9,19 @@ class AppConst{
       "title": "Most Popular",
       "questionInfo": [
         {
-          "icons": Icons.help_outline,
+          "icons": Icons.cake,
           "color": Colors.indigo,
-          "question": "What can you help me with?",
+          "question": "Suggest a unique birthday quote.",
         },
         {
-          "icons": Icons.question_answer,
+          "icons": Icons.email,
           "color": Colors.teal,
-          "question": "How do I ask a good question?",
+          "question": "write a professional email",
         },
         {
-          "icons": Icons.settings,
+          "icons": Icons.travel_explore,
           "color": Colors.purple,
-          "question": "Can I customize the chatbot?",
+          "question": "Can you plan a travel itinerary for me?",
         },
         {
           "icons": Icons.security,
@@ -68,6 +68,11 @@ class AppConst{
           "color": Colors.purpleAccent,
           "question": "What is deep learning?",
         },
+        {
+          "icons": Icons.privacy_tip,
+          "color": Colors.purpleAccent,
+          "question": "Is ChatGPT safe and private to use?",
+        },
       ],
     },
     {
@@ -79,6 +84,16 @@ class AppConst{
           "question": "How do I write effective hashtags?",
         },
         {
+          "icons": Icons.closed_caption,
+          "color": Colors.teal,
+          "question": "Suggest a caption for my Instagram post",
+        },
+        {
+          "icons": Icons.people,
+          "color": Colors.blueGrey,
+          "question": "Best time to post on social media?",
+        },
+        {
           "icons": Icons.description,
           "color": Colors.pink,
           "question": "How to create engaging captions?",
@@ -88,11 +103,7 @@ class AppConst{
           "color": Colors.cyan,
           "question": "Tips to grow my online presence?",
         },
-        {
-          "icons": Icons.people,
-          "color": Colors.blueGrey,
-          "question": "Best time to post on social media?",
-        },
+
       ],
     },
     {
@@ -101,7 +112,7 @@ class AppConst{
         {
           "icons": Icons.emoji_emotions,
           "color": Colors.yellow,
-          "question": "Tell me a clean joke.",
+          "question": "Tell me a joke.",
         },
         {
           "icons": Icons.psychology,

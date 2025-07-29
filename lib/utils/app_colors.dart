@@ -2,7 +2,7 @@ import 'dart:ui';
 
 class AppColors{
   static const Color scaffoldColor = Color(0xff101523);
-  static const Color primaryColor = Color(0xff6C63FF);
+  static const Color secondaryBgColor = Color(0xff1B2133);
   static const Color secondaryColor = Color(0xff00C9A7);
 
   //chat bubble colors
@@ -14,5 +14,5 @@ class AppColors{
   static const Color secondaryTextColor = Color(0xffCFCFCF);
 
   //
-  static const Color secondaryBgColor = Color(0xff1B2133);
+
 }
