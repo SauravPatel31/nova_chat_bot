@@ -43,3 +43,50 @@ Ensure the following are installed:
 
 ```bash
 git clone https://github.com/SauravPatel31/nova_chat_bot.git
+   ```
+2. Install dependencies:  
+   ```bash
+   flutter pub get  
+   ```  
+3. Run the app:  
+   ```bash
+   flutter run  
+   ```  
+
+The app will launch on a connected device or emulator.  
+
+---
+
+## 🤝 Contributing  
+
+Contributions are always welcome!  
+
+1. Fork the repository.  
+2. Create a feature branch:  
+   ```bash
+   git checkout -b feature-name  
+   ```  
+3. Commit your changes:  
+   ```bash
+   git commit -m "Add a meaningful message"  
+   ```  
+4. Push your changes:  
+   ```bash
+   git push origin feature-name  
+   ```  
+5. Open a pull request.  
+
+---
+
+## 💡 Acknowledgements  
+
+- A huge thanks to the **Flutter community** 💙 and the creators of the amazing open-source libraries used in this project.  
+
+---
+
+## 📞 Contact  
+
+- **Author**: Saurav Patel  
+- 📧 **Email**: [sauravp3103@gmail.com](mailto:sauravp3103@gmail.com)  
+- 🐙 **GitHub**: [SauravPatel31](https://github.com/SauravPatel31)  
+
