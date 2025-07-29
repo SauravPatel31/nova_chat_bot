@@ -1,6 +1,8 @@
 # 🤖 Nova Chat Bot – AI-Powered Chat App
 
-![nova-chat](https://github.com/user-attachments/assets/your-image-link.png)
+<img width="1366" height="601" alt="Home" src="https://github.com/user-attachments/assets/35f1a02a-6f53-4b93-b580-8558fafbc978" />
+
+
 
 **Welcome to Nova Chat Bot!**  
 
